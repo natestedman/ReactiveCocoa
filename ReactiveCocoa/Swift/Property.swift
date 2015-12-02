@@ -10,6 +10,16 @@ public protocol PropertyType {
 	var producer: SignalProducer<Value, NoError> { get }
 }
 
+extension PropertyType
+{
+	/// A Signal that will send the property's value changes over time.
+	public var signal: Signal<Value, NoError> {
+		let (signal, observer) = Signal<Value, NoError>.pipe()
+		producer.start(observer)
+		return signal
+	}
+}
+
 /// A read-only property that allows observation of its changes.
 public struct AnyProperty<Value>: PropertyType {
 
