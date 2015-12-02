@@ -1,5 +1,5 @@
 /// Represents a property that allows observation of its changes.
-public protocol PropertyType {
+public protocol PropertyType: SignalProducerType {
 	typealias Value
 
 	/// The current value of the property.
@@ -8,6 +8,14 @@ public protocol PropertyType {
 	/// A producer for Signals that will send the property's current value,
 	/// followed by all changes over time.
 	var producer: SignalProducer<Value, NoError> { get }
+}
+
+extension PropertyType {
+	/// Creates a Signal from the producer, passes it into the given closure,
+	/// then starts sending events on the Signal when the closure has returned.
+	public func startWithSignal(@noescape setUp: (Signal<Value, Error>, Disposable) -> ()) {
+		producer.startWithSignal(setUp)
+	}
 }
 
 /// A read-only property that allows observation of its changes.
