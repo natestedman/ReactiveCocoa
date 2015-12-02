@@ -1,5 +1,5 @@
 /// Represents a property that allows observation of its changes.
-public protocol PropertyType {
+public protocol PropertyType: SignalType {
 	typealias Value
 
 	/// The current value of the property.
@@ -12,6 +12,12 @@ public protocol PropertyType {
 
 extension PropertyType
 {
+	/// Observes the Property by sending any future value changes to the given
+	/// observer.
+	public func observe(observer: Signal<Value, Error>.Observer) -> Disposable? {
+		return signal.observe(observer)
+	}
+	
 	/// A Signal that will send the property's value changes over time.
 	public var signal: Signal<Value, NoError> {
 		let (signal, observer) = Signal<Value, NoError>.pipe()
