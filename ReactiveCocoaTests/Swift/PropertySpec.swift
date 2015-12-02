@@ -405,6 +405,22 @@ class PropertySpec: QuickSpec {
 				}
 			}
 		}
+		
+		describe("Signal") {
+			it("should send new values when the property is updated") {
+				var latest: Int?
+
+				let property = MutableProperty(0)
+				let disposable = property.signal.observeNext({ value in latest = value })
+
+				expect(latest).to(beNil())
+
+				property.value = 1
+				expect(latest).to(equal(1))
+				
+				disposable?.dispose()
+			}
+		}
 	}
 }
 
