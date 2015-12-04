@@ -10,7 +10,12 @@ import Foundation
 
 /// An atomic variable.
 public final class Atomic<Value> {
+	#if os(OSX) || os(iOS) || os(tvOS) || os(watchOS)
 	private var spinLock = OS_SPINLOCK_INIT
+	#else
+	private let nsLock = NSLock()
+	#endif
+
 	private var _value: Value
 	
 	/// Atomically gets or sets the value of the variable.
@@ -36,11 +41,19 @@ public final class Atomic<Value> {
 	}
 	
 	private func lock() {
+		#if os(OSX) || os(iOS) || os(tvOS) || os(watchOS)
 		OSSpinLockLock(&spinLock)
+		#else
+		nsLock.lock()
+		#endif
 	}
 	
 	private func unlock() {
+		#if os(OSX) || os(iOS) || os(tvOS) || os(watchOS)
 		OSSpinLockUnlock(&spinLock)
+		#else
+		nsLock.unlock()
+		#endif
 	}
 	
 	/// Atomically replaces the contents of the variable.
