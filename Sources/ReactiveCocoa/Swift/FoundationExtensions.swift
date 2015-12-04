@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 GitHub. All rights reserved.
 //
 
+#if os(OSX) || os(iOS) || os(tvOS) || os(watchOS)
+
 import Foundation
 
 extension NSNotificationCenter {
@@ -48,3 +50,5 @@ extension NSURLSession {
 		}
 	}
 }
+
+#endif
